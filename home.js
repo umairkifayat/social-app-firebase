@@ -1,3 +1,23 @@
+const express = require('express');
+const app = express();
+
+// Set Permissions-Policy header excluding 'interest-cohort'
+app.use((req, res, next) => {
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), interest-cohort=()');
+  next();
+});
+
+// Rest of your server setup...
+
+// Assume you have your other routes and middleware here
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+
+
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 import { auth, db } from "./config.js";
 import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
