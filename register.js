@@ -1,29 +1,16 @@
-const express = require('express');
-const app = express();
 
-// Set Permissions-Policy header excluding 'interest-cohort'
-app.use((req, res, next) => {
-  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), interest-cohort=()');
-  next();
-});
 
-// Rest of your server setup...
-
-// Assume you have your other routes and middleware here
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-import {  createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
-import { auth } from "./config.js";
+import {  createUserWithEmailAndPassword ,uploadBytes } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { auth, } from "./config.js";
 
 
 
 const form = document.querySelector('.form')
 const pass = document.querySelector('.pass')
 const email = document.querySelector('.email')
+const names = document.querySelector('.names')
+const img = document.querySelector('.file')
+
 
 
 form.addEventListener('submit',(event) =>{
@@ -41,6 +28,10 @@ createUserWithEmailAndPassword(auth, email.value, pass.value)
           popup: 'animate__animated animate__fadeOutUp'
         }
       })
+        const storageRef = ref(storage, names.value);
+        uploadBytes(storageRef, file).then((snapshot) => {
+          console.log('Uploaded a blob or file!');
+});
     
     email.value = ''
     password.value = ''

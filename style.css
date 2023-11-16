@@ -28,6 +28,7 @@
 
   .email,
   .pass {
+    display: flex;
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -54,7 +55,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: 100%;
+    width: 70%;
   }
 
   .btn-primary:hover {
