@@ -1,40 +1,59 @@
-
-
-import { signInWithEmailAndPassword  } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { signInWithEmailAndPassword ,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
 import { auth } from "./config.js";
 
 
-const form = document.querySelector('.form')
-const pass = document.querySelector('.pass')
-const email = document.querySelector('.email')
+
+const email = document.querySelector('.email');
+const password = document.querySelector('.password');
+const btn = document.querySelector('.btn');
 
 
-form.addEventListener('submit', (event) => {
-    event.preventDefault()
-    signInWithEmailAndPassword(auth, email.value, pass.value)
-    .then((userCredential) => {
+
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+      // console.log(user);
+      window.location = './home.html'
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+btn.addEventListener('click',(event)=>{
+    event.preventDefault();
+    // console.log(email.value);
+    // console.log(password.value);
+    signInWithEmailAndPassword(auth, email.value, password.value)
+  .then((userCredential) => {
     const user = userCredential.user;
-console.log(user);
-        window.location = './home.html'
-    })
-    .catch((error) => {
-        
-        Swal.fire({
-            title: error,
-                showClass: {
-                    popup: 'animate__animated animate__fadeInDown'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__fadeOutUp'
-                }
-            })
-            
-        });
-    
-    email.value = ''
-    pass.value = ''
-    })
-    
-    
-    
-    
+    console.log(user);
+    window.location = './home.html'
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorMessage);
+  });
+
+})

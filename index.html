@@ -1,51 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Log in</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="log.css">
+    <title>Log in</title>
 </head>
-
 <body>
-  <center>
-    <h1 class="h1">Login</h1>
-    <form class="form">
-      <div class="form-group">
+    <div class="login_form_container">
+        <div class="login_form">
+            <h2  >Sign in</h2>
+            <input type="email" placeholder="Email" class="email">
+            <input type="password" placeholder="Password" class="password">
+            <a href="./forgot.html">Forgot password</a>
+       
+            <button class="btn">Log In</button>
+            
+            <a href="register.html">Create a account</a>
+        </div>
+    </div>
 
-        <input type="email" placeholder="Email" class="email">
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-      <div class="form-group">
-        <input type="password" placeholder="Password" class="pass">
-      </div>
-      <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me
-          out</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="./forgot.html" class="forgot">Forgot Password</a>
-      </div>
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    <a href="./register.html" class="anchor-tag">you have not a Register</a>
-  </center>
-
-
-
-
-
-
-
-
- 
-
-  <script type="module" src="log.js"></script>
-  <!-- sweet alert cdn  -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
-
+    <script type="module" src="log.js"></script>
 </body>
-
 </html>

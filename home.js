@@ -1,121 +1,134 @@
+import { onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+import { auth,db} from "./config.js";
+import { collection, addDoc ,getDocs ,Timestamp, query, orderBy, deleteDoc, doc, updateDoc, where } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js"; 
 
 
 
 
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
-import { auth, db } from "./config.js";
-import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+const form = document.querySelector('#form')
+const input = document.querySelector('#text')
+const button=document.querySelector('#button')
+const div=document.querySelector('.name-div')
+const card=document.querySelector('.div-2')
 
-const form = document.querySelector('.form');
-const title = document.querySelector('.title');
-const des = document.querySelector('.description');
-const postContainer = document.getElementById('postContainer');
-const btnSignOut = document.getElementById('btnSignOut');
 
-// onauthstatechange function
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const uid = user.uid;
-    console.log(uid);
-    const Toast = Swal.mixin({
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
-      }
-    });
-
-    Toast.fire({
-      icon: 'success',
-      title: 'login successfully'
-    });
+      const uid = user.uid;
+      const q = query(collection(db, "users"), where("uid", "==", uid));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+          // console.log(doc.data());
+          div.innerHTML = doc.data().firstName
+         
+      });
+      getData(user.uid)
   } else {
-    window.location = './index.html';
+      window.location = 'index.html'
   }
 });
+  
 
-// logout function
-btnSignOut.addEventListener('click', () => {
-  signOut(auth).then(() => {
-    console.log('logout successfully');
-    window.location = './index.html';
-  }).catch((error) => {
-    console.log(error);
-  });
+  
+  button.addEventListener('click',()=>{
+    signOut(auth).then(() => {
+      console.log('logout successfully');
+      
+      window.location = './login.html'
+    }).catch((error) => {
+      console.log(error);
+    });
+  })
+
+  let arr=[];
+
+
+  function renderingPost(){
+    card.innerHTML=''
+    // console.log(arr)
+    arr.map((item)=>{
+      card.innerHTML+=`<h1>${item.todo}</h1>
+      <button type="button" id="delete">Delete</button>
+      <button type="button" id="update" >Edit</button
+      `
+    })
+    // renderingPost()
+const del=document.querySelectorAll('#delete')
+const up=document.querySelectorAll('#update')
+
+// console.log(del)
+// console.log(up)
+
+del.forEach((btn, index)=>{
+  btn.addEventListener('click',async()=>{
+    console.log('delete called',arr[index])
+    await deleteDoc(doc(db, "post", arr[index].docId))
+    .then(()=>{
+      console.log('post deleted')
+      arr.splice(index , 1)
+      renderingPost()
+    })
+  })
+})
+
+up.forEach((btn,index)=>{
+  btn.addEventListener('click',async()=>{
+    console.log('update called',arr[index])
+    const updatedInput= prompt('enter new value')
+await updateDoc(doc(db, "post", arr[index].docId), {
+  todo: updatedInput
 });
+arr[index].todo=updatedInput
+renderingPost()
+  })
+})
+  }
 
-// adding post
-const arr = [];
 
-async function getDataFromFirestore() {
-  arr.length = 0;
-  const querySnapshot = await getDocs(collection(db, "post"));
-  querySnapshot.forEach((doc) => {
-    arr.push(doc.data());
-  });
 
-  postContainer.innerHTML = ''; // Clear the container before appending new data
 
-  arr.forEach((item) => {
-    postContainer.innerHTML += `<div class='inner-card'>  
-      <p>Title: ${item.Title}</p>
-      <p>Description: ${item.Description}</p>
-    </div>`;
-  });
+
+
+  async function getData(uid){
+    arr.length=0;
+    const q = query(collection(db, "post") , orderBy('postDate','desc') , where('uid','==', uid) )
+    const querySnapshot = await getDocs(q);
+querySnapshot.forEach((doc) => {
+  arr.push({...doc.data(), docId: doc.id})
+  
+});
+// console.log(arr)
+renderingPost()
+  }
+
+  
+// renderingPost()
+// render()
+  form.addEventListener('submit',async(event)=>{
+event.preventDefault();
+// console.log(input.value)
+if (input.value==='') {
+     alert('first enter value')
+    } else {
+  
+      try {
+const postObj={
+  todo:input.value,
+  uid:auth.currentUser.uid,
+  postDate:Timestamp.fromDate(new Date())
+}
+  
+const docRef = await addDoc(collection(db, "post"),postObj);
+console.log("Document written with ID: ", docRef.id);
+  postObj.docId = docRef.id;
+  arr=[postObj,...arr];
+  // console.log(arr)
+  renderingPost()
+  input.value=''
+} 
+catch (e) {
+  console.error("Error adding document: ", e);
+}
 }
 
-getDataFromFirestore();
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  try {
-    const docRef = await addDoc(collection(db, "post"), {
-      Title: title.value,
-      Description: des.value,
-      uid: auth.currentUser.uid
-    });
-
-    title.value = '';
-    des.value = '';
-    console.log("Document written with ID: ", docRef.id);
-    getDataFromFirestore();
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+})
